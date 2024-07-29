@@ -1,6 +1,5 @@
 // pages/api/ussd.ts
 import { NextApiRequest, NextApiResponse } from 'next';
-import { NextRequest, NextResponse } from "next/server";
 
 // Simulated session store (for development purposes)
 const sessionStore: { [key: string]: { userData: string, currentWordIndex: number } } = {};
@@ -14,36 +13,19 @@ const scrambledWords = [
   { word: "LOREFSW", hint: "Unscramble to form an object part of nature (often used to show love or appreciation).", answer: "FLOWERS" }
 ];
 
-export async function POST(req: NextRequest) {
+export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   if (req.method !== "POST") {
-    return new NextResponse(JSON.stringify({ message: "Method Not Allowed" }), {
-      status: 405,
-      headers: {
-        "Content-Type": "application/json",
-      },
-    });
+    return res.status(405).json({ message: "Method Not Allowed" });
   }
 
   try {
-    const contentType = req.headers.get("content-type");
+    const contentType = req.headers['content-type'];
     if (contentType !== "application/x-www-form-urlencoded") {
-      return new NextResponse(
-        JSON.stringify({ message: "Unsupported Media Type" }),
-        {
-          status: 415,
-          headers: {
-            "Content-Type": "application/json",
-          },
-        }
-      );
+      return res.status(415).json({ message: "Unsupported Media Type" });
     }
 
     // Parse the URL-encoded request body
-    const formData = await req.formData();
-    const data: Record<string, string> = {};
-    formData.forEach((value, key) => {
-      data[key] = value.toString();
-    });
+    const data = req.body as Record<string, string>;
 
     const ussd_id = data['USERID'];
     const msisdn = data['MSISDN'];
@@ -123,19 +105,4 @@ export async function POST(req: NextRequest) {
       response = "END Invalid Choice.";
     }
 
-    return new NextResponse(response, {
-      status: 200,
-      headers: {
-        "Content-Type": "text/plain",
-      },
-    });
-  } catch (error) {
-    console.error("Error processing request:", error);
-    return new NextResponse(JSON.stringify({ message: "Invalid form data" }), {
-      status: 400,
-      headers: {
-        "Content-Type": "application/json",
-      },
-    });
-  }
-}
+    res.setHeader("Cont
