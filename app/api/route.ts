@@ -73,6 +73,8 @@ export async function POST(req: NextRequest) {
 
     if (text === "") {
       response = initialMenu;
+    } else if (textArray[textArray.length - 1] === "0") {
+      response = menus[previousLevel] || initialMenu;
     } else if (menus[currentLevel]) {
       response = menus[currentLevel];
     } else if (hotlineNumbers[currentLevel]) {
@@ -109,8 +111,6 @@ export async function POST(req: NextRequest) {
       response = `END Visit the following URLs for free web games:\n1. https://www.miniclip.com\n2. https://www.kongregate.com\n3. https://www.crazygames.com`;
     } else if (text === "3*3") {
       response = `END Visit the following URLs for free web comics/stories:\n1. https://www.webtoons.com\n2. https://www.tapas.io\n3. https://www.shortstories.com`;
-    } else if (textArray[textArray.length - 1] === "0") {
-      response = menus[previousLevel] || initialMenu;
     } else {
       response = `END Invalid Choice.`;
     }
