@@ -11,6 +11,28 @@ const scrambledWords = [
   // Add more words as needed
 ];
 
+const initialMenu = `CON Hi, welcome. Your mental health is a priority. Don't be afraid to seek help.\n1. Suicide and Crisis\n2. Telephone Counselling\n3. Play a Game`;
+
+const menus: { [key: string]: string } = {
+  "": initialMenu,
+  "1": `CON Suicide and Crisis Hotlines:\n1. Ambulance\n2. Emergency number\n3. Suicide Hotline\n4. Fire Service\n5. Police\n0. Back`,
+  "2": `CON Telephone Counselling Hotlines:\n1. Greater Accra Region\n2. Ashanti Region\n3. Western Region\n4. Brong Ahafo Region\n5. Northern Region\n0. Back`,
+  "3": `CON Games:\n1. Word Scramble\n2. Free Web Games\n3. Free Web Comics/Stories\n0. Back`
+};
+
+const hotlineNumbers: { [key: string]: string } = {
+  "1*1": `END Please dial 193 for Ambulance services.`,
+  "1*2": `END Please dial 999 for Emergency services.`,
+  "1*3": `END Please dial +233 24 447 1279 for Suicide Hotline.`,
+  "1*4": `END Please dial 192 for Fire Service.`,
+  "1*5": `END Please dial 191 for Police.`,
+  "2*1": `END Please dial 030 266 2441 for Greater Accra Region.`,
+  "2*2": `END Please dial 032 202 2323 for Ashanti Region.`,
+  "2*3": `END Please dial 031 204 6121 for Western Region.`,
+  "2*4": `END Please dial 035 202 7083 for Brong Ahafo Region.`,
+  "2*5": `END Please dial 037 202 2889 for Northern Region.`
+};
+
 export async function POST(req: NextRequest) {
   if (req.method !== "POST") {
     return new NextResponse(JSON.stringify({ message: "Method Not Allowed" }), {
@@ -44,41 +66,17 @@ export async function POST(req: NextRequest) {
 
     const { sessionId, serviceCode, phoneNumber, text } = data;
     const textArray = text.split("*");
+    const currentLevel = textArray.join("*");
+    const previousLevel = textArray.slice(0, -1).join("*");
 
     let response = "";
 
     if (text === "") {
-      response = `CON Hi, welcome. Your mental health is a priority. Don't be afraid to seek help.\n1. Suicide and Crisis\n2. Telephone Counselling\n3. Play a Game`;
-    } else if (text === "1") {
-      response = `CON Suicide and Crisis Hotlines:\n1. Ambulance\n2. Emergency number\n3. Suicide Hotline\n4. Fire Service\n5. Police\n0. Back`;
-    } else if (text === "1*1") {
-      response = `END Please dial 193 for Ambulance services.`;
-    } else if (text === "1*2") {
-      response = `END Please dial 999 for Emergency services.`;
-    } else if (text === "1*3") {
-      response = `END Please dial +233 24 447 1279 for Suicide Hotline.`;
-    } else if (text === "1*4") {
-      response = `END Please dial 192 for Fire Service.`;
-    } else if (text === "1*5") {
-      response = `END Please dial 191 for Police.`;
-    } else if (text === "1*0") {
-      response = `CON Hi, welcome. Your mental health is a priority. Don't be afraid to seek help.\n1. Suicide and Crisis\n2. Telephone Counselling\n3. Play a Game`;
-    } else if (text === "2") {
-      response = `CON Telephone Counselling Hotlines:\n1. Greater Accra Region\n2. Ashanti Region\n3. Western Region\n4. Brong Ahafo Region\n5. Northern Region\n0. Back`;
-    } else if (text === "2*1") {
-      response = `END Please dial 030 266 2441 for Greater Accra Region.`;
-    } else if (text === "2*2") {
-      response = `END Please dial 032 202 2323 for Ashanti Region.`;
-    } else if (text === "2*3") {
-      response = `END Please dial 031 204 6121 for Western Region.`;
-    } else if (text === "2*4") {
-      response = `END Please dial 035 202 7083 for Brong Ahafo Region.`;
-    } else if (text === "2*5") {
-      response = `END Please dial 037 202 2889 for Northern Region.`;
-    } else if (text === "3") {
-      response = `CON Games:\n1. Word Scramble\n2. Free Web Games\n3. Free Web Comics/Stories\n0. Back`;
-    } else if (text === "2*0") {
-      response = `CON Hi, welcome. Your mental health is a priority. Don't be afraid to seek help.\n1. Suicide and Crisis\n2. Telephone Counselling\n3. Play a Game`;
+      response = initialMenu;
+    } else if (menus[currentLevel]) {
+      response = menus[currentLevel];
+    } else if (hotlineNumbers[currentLevel]) {
+      response = hotlineNumbers[currentLevel];
     } else if (text === "3*1") {
       const userGame = gameData[phoneNumber] || { currentWordIndex: 0 };
       const currentWord = scrambledWords[userGame.currentWordIndex];
@@ -111,8 +109,8 @@ export async function POST(req: NextRequest) {
       response = `END Visit the following URLs for free web games:\n1. https://www.miniclip.com\n2. https://www.kongregate.com\n3. https://www.crazygames.com`;
     } else if (text === "3*3") {
       response = `END Visit the following URLs for free web comics/stories:\n1. https://www.webtoons.com\n2. https://www.tapas.io\n3. https://www.shortstories.com`;
-    } else if (text === "3*0") {
-      response = `CON Hi, welcome. Your mental health is a priority. Don't be afraid to seek help.\n1. Suicide and Crisis\n2. Telephone Counselling\n3. Play a Game`;
+    } else if (textArray[textArray.length - 1] === "0") {
+      response = menus[previousLevel] || initialMenu;
     } else {
       response = `END Invalid Choice.`;
     }
