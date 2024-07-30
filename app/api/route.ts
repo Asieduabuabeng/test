@@ -46,8 +46,6 @@ export async function POST(req: NextRequest) {
 
     let response = "";
 
-    console.log("Received text:", text); // Debug log
-
     // Main menu
     if (text === "") {
       response = "CON Hi, welcome. Your mental health is a priority. Don't be afraid to seek help.\n1. Suicide and Crisis\n2. Telephone Counselling\n3. Play a Game";
