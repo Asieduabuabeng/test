@@ -61,6 +61,8 @@ export async function POST(req: NextRequest) {
       response = `END Please dial 192 for Fire Service.`;
     } else if (text === "1*5") {
       response = `END Please dial 191 for Police.`;
+    } else if (text === "1*0") {
+      response = `CON Hi, welcome. Your mental health is a priority. Don't be afraid to seek help.\n1. Suicide and Crisis\n2. Telephone Counselling\n3. Play a Game`;
     } else if (text === "2") {
       response = `CON Telephone Counselling Hotlines:\n1. Greater Accra Region\n2. Ashanti Region\n3. Western Region\n4. Brong Ahafo Region\n5. Northern Region\n0. Back`;
     } else if (text === "2*1") {
@@ -75,6 +77,8 @@ export async function POST(req: NextRequest) {
       response = `END Please dial 037 202 2889 for Northern Region.`;
     } else if (text === "3") {
       response = `CON Games:\n1. Word Scramble\n2. Free Web Games\n3. Free Web Comics/Stories\n0. Back`;
+    } else if (text === "2*0") {
+      response = `CON Hi, welcome. Your mental health is a priority. Don't be afraid to seek help.\n1. Suicide and Crisis\n2. Telephone Counselling\n3. Play a Game`;
     } else if (text === "3*1") {
       const userGame = gameData[phoneNumber] || { currentWordIndex: 0 };
       const currentWord = scrambledWords[userGame.currentWordIndex];
@@ -107,7 +111,7 @@ export async function POST(req: NextRequest) {
       response = `END Visit the following URLs for free web games:\n1. https://www.miniclip.com\n2. https://www.kongregate.com\n3. https://www.crazygames.com`;
     } else if (text === "3*3") {
       response = `END Visit the following URLs for free web comics/stories:\n1. https://www.webtoons.com\n2. https://www.tapas.io\n3. https://www.shortstories.com`;
-    } else if (text === "0") {
+    } else if (text === "3*0") {
       response = `CON Hi, welcome. Your mental health is a priority. Don't be afraid to seek help.\n1. Suicide and Crisis\n2. Telephone Counselling\n3. Play a Game`;
     } else {
       response = `END Invalid Choice.`;
