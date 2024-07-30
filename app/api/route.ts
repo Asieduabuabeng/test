@@ -44,6 +44,8 @@ export async function POST(req: NextRequest) {
     const { sessionId, serviceCode, phoneNumber, text } = data;
     const textArray = text.split("*");
 
+    console.log("Received text:", text); // Debugging: log received text
+
     let response = "";
 
     // Main menu
@@ -128,6 +130,8 @@ export async function POST(req: NextRequest) {
     else {
       response = "END Invalid Choice.";
     }
+
+    console.log("Response:", response); // Debugging: log the response being sent
 
     return new NextResponse(response, {
       status: 200,
